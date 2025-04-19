@@ -34,7 +34,7 @@ read_secret WP_DATABASE_ROOT_PASSWORD "🔑 WP_DATABASE_ROOT_PASSWORD"
 read_secret WP_ADMIN_PASSWORD         "🔑 WP_ADMIN_PASSWORD"
 read_secret WP_USER_PASSWORD          "🔑 WP_USER_PASSWORD"
 read_secret FTP_PASSWORD              "🔑 FTP_PASSWORD"
-read_secret HEALTH_PASSWORD           "🔑 HEALTH_PASS"
+read_secret HEALTH_PASSWORD           "🔑 HEALTH_PASSWORD"
 
 # Valor automático do login
 LOGIN=$(whoami)

@@ -82,7 +82,7 @@ permission:
 	@echo "✅"
 	@[ -f ./srcs/.env ] || (printf "ERROR: .env file not found, build one under srcs or run \"make env\" first\n"; false)
 
-env:
+venv:
 	@[ -f ./srcs/.env ] && echo "There is already a srcs/.env file ✅" && \
 	echo "NOTE: add the following alias to avoid port mess when using docker ps" && \
 	echo 'alias dps='\''docker ps --format "table {{.ID}}\\t{{.Image}}\\t{{.Names}}\\t{{.Status}}"'\' || \
@@ -90,8 +90,9 @@ env:
 	printf "%s\n" "WP_DATABASE_HOST=mariadb" "WP_DATABASE_NAME=wordpress" "WP_DATABASE_USER=wp_user" "WP_DATABASE_ROOT=root" "WP_URL=http://$(LOGIN).42.fr" "WP_TITLE=The $(LOGIN)'s page of wonderful $(LOGIN)derness" "WP_ADMIN_USER=toptier" "WP_ADMIN_EMAIL=toptier@example.com" "WP_USER=changer" "WP_USER_EMAIL=changer@example.com" "HEALTH_USER=healthchecker" "REDIS_HOST=redis" "REDIS_PORT=6379" "FTP_USER=ftpuser" "FTP_PATH=/var/www/wordpress" "WP_DATABASE_PASSWORD=CHANGE_ME_DB_PASS" "WP_DATABASE_ROOT_PASSWORD=CHANGE_ME_ROOT_PASS" "WP_ADMIN_PASSWORD=CHANGE_ME_ADMIN_PASS" "WP_USER_PASSWORD=CHANGE_ME_USER_PASS" "FTP_PASSWORD=CHANGE_ME_FTP_PASS" "HEALTH_PASS=CHANGE_ME_HEALTH_PASS" > srcs/.env && \
 	echo "✅")
 
-venv:
-	@./scripts/generate-env.sh
+env:
+	@chmod +x ./srcs/requirements/tools/generate-env.sh
+	@./srcs/requirements/tools/generate-env.sh
 
 .PHONY: all setup up down clean fclean nuke re permission env \
 	$(SERVICES) \
