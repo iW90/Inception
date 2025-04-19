@@ -1,0 +1,13 @@
+# Ignora tudo por padrão
+**
+
+# Permite apenas os arquivos necessários
+!conf/
+!conf/my.cnf
+
+!tools/
+!tools/db-setup.sh
+
+# Garante que Dockerfile e .dockerignore não sejam ignorados (se você quiser manter o padrão de build)
+!Dockerfile
+!.dockerignore

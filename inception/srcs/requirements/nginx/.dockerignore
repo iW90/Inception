@@ -1,0 +1,13 @@
+# Ignora tudo por padrão
+**
+
+# Permite apenas os arquivos necessários para o build
+!conf/
+!conf/nginx-template.conf
+
+!tools/
+!tools/entrypoint.sh
+
+# Garante que Dockerfile e .dockerignore não sejam ignorados (caso você esteja copiando o Dockerfile como parte do contexto)
+!Dockerfile
+!.dockerignore
