@@ -19,11 +19,19 @@ read_secret() {
   while true; do
     read -sp "$prompt: " value
     echo
-    if [ -n "$value" ]; then
+
+	# Verifica se a senha está vazia
+    if [ -z "$value" ]; then
+      echo "⚠️  This field cannot be empty. Please try again."
+      continue
+    fi
+
+    # Valida se a senha contém apenas caracteres alfanuméricos (a-z, A-Z, 0-9)
+    if [[ "$value" =~ ^[a-zA-Z0-9]+$ ]]; then
       eval "$var_name=\"$value\""
       break
     else
-      echo "⚠️  This field cannot be empty. Please try again."
+      echo "⚠️  Invalid input. Only alphanumeric characters are allowed (a-z, A-Z, 0-9). Please try again."
     fi
   done
 }
@@ -47,13 +55,13 @@ WP_DATABASE_USER=wp_user
 WP_DATABASE_ROOT=root
 WP_DATABASE_PASSWORD=$WP_DATABASE_PASSWORD
 WP_DATABASE_ROOT_PASSWORD=$WP_DATABASE_ROOT_PASSWORD
-WP_URL=http://$LOGIN.42.fr
-WP_TITLE=The $LOGIN's page of wonderful ${LOGIN}derness
+WP_URL="http://$LOGIN.42.fr"
+WP_TITLE="The $LOGIN's page of wonderful ${LOGIN}derness"
 WP_ADMIN_USER=toptier
-WP_ADMIN_EMAIL=toptier@example.com
+WP_ADMIN_EMAIL="toptier@example.com"
 WP_ADMIN_PASSWORD=$WP_ADMIN_PASSWORD
 WP_USER=changer
-WP_USER_EMAIL=changer@example.com
+WP_USER_EMAIL="changer@example.com"
 WP_USER_PASSWORD=$WP_USER_PASSWORD
 HEALTH_USER=healthchecker
 HEALTH_PASS=$HEALTH_PASSWORD
