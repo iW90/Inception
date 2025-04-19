@@ -1,6 +1,8 @@
 #!/bin/bash
 
-ENV_FILE="srcs/.env"
+ENV_FILE="srcs/.env"´
+
+
 
 # Remove o .env existente, se houver
 if [ -f "$ENV_FILE" ]; then

@@ -93,6 +93,8 @@ venv:
 env:
 	@chmod +x ./srcs/requirements/tools/setup-env.sh
 	@./srcs/requirements/tools/setup-env.sh
+	@echo "NOTE: add the following alias to avoid port mess when using docker ps"
+	@echo 'alias dps='\''docker ps --format "table {{.ID}}\\t{{.Image}}\\t{{.Names}}\\t{{.Status}}"'\'
 
 .PHONY: all setup up down clean fclean nuke re permission env \
 	$(SERVICES) \
