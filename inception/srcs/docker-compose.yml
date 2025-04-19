@@ -1,0 +1,165 @@
+version: "3"
+
+networks:                   # Cria uma rede Docker personalizada chamada inception, baseada no padrão bridge.
+  inception:
+    driver: bridge
+    name: inception
+
+volumes:
+  wp-pages:                 # Volume para armazenar o template do WordPress (PHP)
+    driver: local           # Usando o driver local para armazenar os dados no host
+    driver_opts:            # Opções para configurar o volume
+      type: 'none'          # Não usa um tipo de volume especial, apenas vincula ao sistema de arquivos do host
+      o: 'bind'             # Define que o volume será um "bind mount" (monta o diretório do host diretamente no container)
+      device: '${DATA_DIR}/wp-pages'      # Diretório do host para armazenar os arquivos do WordPress
+  wp-database:              # Volume para armazenar os dados do MariaDB
+    driver: local           # Usando o driver local para armazenar os dados no host
+    driver_opts:            # Opções para configurar o volume
+      type: 'none'          # Não usa um tipo de volume especial, apenas vincula ao sistema de arquivos do host
+      o: 'bind'             # Define que o volume será um "bind mount" (monta o diretório do host diretamente no container)
+      device: '${DATA_DIR}/wp-database'   # Diretório do host para armazenar os dados do MariaDB
+  adminer-volume:           # Bônus: Volume do Adminer
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${DATA_DIR}/adminer-volume'
+
+services:
+  nginx:
+    container_name: nginx
+    restart: always         # Reinicia sempre que o container parar, mantendo o serviço sempre disponível
+    networks:               # Conecta o container à rede Docker chamada 'inception' (tipo bridge)
+      - inception
+    ports:                  # Faz o bind da porta 443 (HTTPS) do host com a porta 443 do container
+      - "443:443"
+    user:                   # Define o usuário e grupo que o container usará, herdando do host (passado via .env)
+      "${UID}:${GID}"
+    volumes:                # Path local onde ficarão salvos os dados (fora do container)
+      - wp-pages:/var/www/wordpress
+      - adminer-volume:/var/www/adminer
+    image: nginx            # Nome da imagem construída pelo build abaixo (será usada como tag da imagem criada)
+    build:                  # Diretório onde está localizado o Dockerfile usado para buildar a imagem do Nginx, e seus argumentos
+      context: ./requirements/nginx
+      args:
+        UID: "${UID}"
+        DOMAIN_NAME: "${LOGIN}.42.fr"
+    healthcheck:            # Teste de saúde do container para garantir que o Nginx está respondendo corretamente
+      test: ["CMD", "curl", "-k", "-f", "https://${LOGIN}.42.fr"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - wordpress           # Garante que o container 'wordpress' seja iniciado antes (mas não garante que esteja pronto!)
+
+  wordpress:
+    container_name: wordpress
+    init: true              # Usa o "init process" do Docker para gerenciar corretamente subprocessos (evita problemas de zombie process, reaproveitamento de PID 1)
+    restart: unless-stopped # Reinicia o container automaticamente, exceto se ele for parado manualmente
+    env_file: .env          # Carrega variáveis de ambiente definidas no arquivo .env (usado para config do WordPress e MariaDB)
+    networks:               # Conecta o container à rede Docker chamada 'inception' (tipo bridge)
+      - inception
+    volumes:                # Monta um volume persistente entre o host e o container (para armazenar os arquivos do WordPress)
+      - wp-pages:/var/www/wordpress
+    image: wordpress        # Nome da imagem construída pelo build abaixo (será usada como tag da imagem criada)
+    build:                  # Diretório onde está localizado o Dockerfile usado para buildar a imagem do Wordpress
+      context: ./requirements/wordpress
+    depends_on:             # Garante que o container 'mariadb' seja iniciado antes deste (não garante que ele esteja saudável!)
+      - mariadb
+
+  mariadb:
+    container_name: mariadb
+    restart: unless-stopped # Reinicia o container automaticamente, exceto se ele for parado manualmente
+    env_file: .env          # Path para as variáveis de ambiente
+    networks:               # Conecta o container à rede Docker chamada 'inception' (tipo bridge)
+      - inception
+    expose:                 # Expõe a porta 3306 apenas para outros containers da mesma rede, não para fora do host
+      - "3306"
+    volumes:                # Path local onde ficarão salvos os dados (fora do container)
+      - wp-database:/var/lib/mysql
+    image: mariadb          # Nome da imagem construída pelo build abaixo (será usada como tag da imagem criada)
+    build:                  # Diretório onde está localizado o Dockerfile usado para buildar a imagem do MariaDB, e seus argumentos
+      context: ./requirements/mariadb
+      args:
+        WP_DATABASE_NAME: ${WP_DATABASE_NAME}
+        WP_DATABASE_USER: ${WP_DATABASE_USER}
+        WP_DATABASE_PASSWORD: ${WP_DATABASE_PASSWORD}
+        WP_DATABASE_ROOT: ${WP_DATABASE_ROOT}
+        WP_DATABASE_ROOT_PASSWORD: ${WP_DATABASE_ROOT_PASSWORD}
+    healthcheck:            # Verifica a saúde do banco: se está acessível e pronto para uso.
+      test: ["CMD", "mysqladmin", "ping", "-u", "${HEALTH_USER}", "-p${HEALTH_PASS}", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # BONUS: Adminer, Redis, FTP, Site e Cadvisor
+
+  adminer:
+    container_name: adminer
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - adminer-volume:/var/www/adminer
+    image: adminer
+    build:
+      context: ./bonus/adminer
+    depends_on:
+      - mariadb
+
+  redis:
+    container_name: redis
+    restart: always
+    networks:
+      - inception
+    image: redis
+    build:
+      context: ./bonus/redis
+    depends_on:
+      - wordpress
+
+  ftp:
+    container_name: ftp
+    restart: always
+    networks:
+      - inception
+    ports:
+      - "21:21"
+      - "10099-10100:10099-10100"
+    volumes:
+      - wp-pages:${FTP_PATH}
+    image: ftp
+    build:
+      context: ./bonus/ftp
+      args:
+        FTP_PATH: ${FTP_PATH}
+        FTP_USER: ${FTP_USER}
+        FTP_PASSWORD: ${FTP_PASSWORD}
+    depends_on:
+      - wordpress
+
+  cadvisor:
+    container_name: cadvisor
+    restart: always
+    expose:
+      - "8080"
+    networks:
+      - inception
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    image: cadvisor
+    build:
+      context: ./bonus/cadvisor
+
+  site:
+    container_name: site
+    restart: always
+    networks:
+      - inception
+    image: site
+    build:
+      context: ./bonus/site

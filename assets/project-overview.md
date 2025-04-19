@@ -1,4 +1,4 @@
-# Notas
+# Overview
 
 ## Geral:
 
@@ -48,7 +48,7 @@
 
 8. Volumes de Dados:
     
-    - Seus volumes devem estar localizados na pasta `/home/login/data` da máquina host. Você deve substituir "login" pelo seu nome de usuário na máquina (por exemplo, "wil").
+    - Seus volumes devem estar localizados na pasta `/home/<login>/data` da máquina host. Você deve substituir "\<login>" pelo seu nome de usuário na máquina (por exemplo, "wil").
 
 9. Domínio Local:
 

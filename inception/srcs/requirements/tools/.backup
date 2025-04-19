@@ -1,0 +1,13 @@
+[mariadbd]
+port = 3306
+bind-address = 0.0.0.0
+
+skip-networking = 0				Essa opção desativa completamente o suporte a conexões de rede quando está ativada (1).
+Como você colocou 0, está tecnicamente dizendo "não desativar", mas essa linha é redundante quando você já configurou bind-address.
+
+skip-bind-address				Essa diretiva não é reconhecida pelas versões recentes do MariaDB.
+
+
+====
+
+
