@@ -33,10 +33,10 @@
 
 | Comando | Explicação |
 | :------ | :--------- |
-| `docker compose ps` | Lista os containers em execução gerenciados pelo Docker Compose. |
-| `docker compose up` | Sobe (executa) os containers definidos no docker-compose.yml. |
-| `docker compose down` | Derruba (para e remove) todos os containers e redes definidos no Compose. |
-| `docker compose restart` | Reinicia todos os serviços definidos no docker-compose.yml. |
+| `docker-compose ps` | Lista os containers em execução gerenciados pelo Docker Compose. |
+| `docker-compose up` | Sobe (executa) os containers definidos no docker-compose.yml. |
+| `docker-compose down` | Derruba (para e remove) todos os containers e redes definidos no Compose. |
+| `docker-compose restart` | Reinicia todos os serviços definidos no docker-compose.yml. |
 
 ## 🔹 Gerenciamento de containers
 
