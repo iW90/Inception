@@ -1,47 +1,60 @@
 #!/bin/bash
 
-# Faz o script parar imediatamente se algum comando falhar (fail-fast)
+# Encerra o script se ocorrer qualquer erro (fail-fast)
 set -e
 
-# Se o diretório de dados do MariaDB ainda não foi inicializado, inicializa o banco de dados vazio
+# envsubst < init.sql.template > init.sql
+
+# Garante que o diretório de dados do MariaDB está inicializado
+echo "[MariaDB] Iniciando servidor em segundo plano..."
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Initializing MariaDB data dir..."
+    echo "[MariaDB] Initializing data directory..."
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 fi
 
-# Inicia o MariaDB em segundo plano de forma segura
-echo "Starting MariaDB..."
+# Inicia o MariaDB temporariamente em segundo plano
+echo "[MariaDB] Starting temporary server..."
 mysqld_safe --user=mysql &
 
-# Aguarda o servidor MariaDB ficar pronto (verifica via socket)
+# Aguarda até o servidor responder via socket
+echo "[MariaDB] Waiting for server to become ready..."
 until mariadb-admin ping --protocol=socket --socket=/run/mysqld/mysqld.sock --silent; do
-  echo "Waiting for MariaDB to be ready..."
   sleep 1
 done
 
-# Executa os comandos SQL para criar o banco e os usuários
-echo "Creating database and users..."
-mariadb --protocol=socket -u root <<EOF
-DROP USER IF EXISTS ''@'localhost';                           -- Remove usuário anônimo
-DROP DATABASE IF EXISTS test;                                 -- Remove DB de testes padrão
-CREATE DATABASE IF NOT EXISTS \`${WP_DATABASE_NAME}\`;        -- Cria o banco do WordPress
-CREATE USER IF NOT EXISTS '${WP_DATABASE_USER}'@'%' 
-  IDENTIFIED BY '${WP_DATABASE_PASSWORD}';                    -- Cria usuário do WordPress
-GRANT ALL PRIVILEGES ON \`${WP_DATABASE_NAME}\`.* 
-  TO '${WP_DATABASE_USER}'@'%';                               -- Dá permissões totais ao user
+# Executa comandos SQL de configuração
+if mariadb --protocol=socket -u root -e "USE \`${WP_DATABASE_NAME}\`;" 2>/dev/null; then
+  echo "Database '${WP_DATABASE_NAME}' already exists. Skipping initialization."
+else
+  echo "[MariaDB] Setting up database and users..."
+  mariadb --protocol=socket -u root <<EOF
+  -- Remove usuário anônimo e banco de testes
+  DROP USER IF EXISTS ''@'localhost';
+  DROP DATABASE IF EXISTS test;
 
-ALTER USER 'root'@'localhost' 
-  IDENTIFIED BY '${WP_DATABASE_ROOT_PASSWORD}';               -- Define senha para o root
+  -- Cria o banco de dados do WordPress (se não existir)
+  CREATE DATABASE IF NOT EXISTS \`${WP_DATABASE_NAME}\`;
 
-CREATE USER IF NOT EXISTS '${HEALTH_USER}'@'localhost' 
-  IDENTIFIED BY '${HEALTH_PASS}';                             -- Cria user para o healthcheck
-GRANT USAGE ON *.* TO '${HEALTH_USER}'@'localhost';           -- Dá acesso limitado p/ healthcheck
+  -- Cria o usuário de aplicação e concede permissões
+  CREATE USER IF NOT EXISTS '${WP_DATABASE_USER}'@'%' IDENTIFIED BY '${WP_DATABASE_PASSWORD}';
+  GRANT ALL PRIVILEGES ON \`${WP_DATABASE_NAME}\`.* TO '${WP_DATABASE_USER}'@'%';
 
-FLUSH PRIVILEGES;                                             -- Aplica todas as mudanças
+  -- Configura senha do usuário root
+  ALTER USER 'root'@'localhost' IDENTIFIED BY '${WP_DATABASE_ROOT_PASSWORD}';
+
+  -- Usuário para healthcheck
+  CREATE USER IF NOT EXISTS '${HEALTH_USER}'@'localhost' IDENTIFIED BY '${HEALTH_PASS}';
+  GRANT USAGE ON *.* TO '${HEALTH_USER}'@'localhost';
+
+  -- Aplica todas as mudanças
+  FLUSH PRIVILEGES;
 EOF
+fi
 
-# Desliga o MariaDB que estava rodando em segundo plano
+# Finaliza o servidor temporário
+echo "[MariaDB] Shutting down temporary server..."
 mysqladmin -u root --protocol=socket --socket=/run/mysqld/mysqld.sock -p"${WP_DATABASE_ROOT_PASSWORD}" shutdown
 
-# Inicia o servidor principal em foreground
+# Inicia o MariaDB em foreground (mantém o container rodando)
+echo "[MariaDB] Initialization complete. Starting main server..."
 exec mariadbd --user=mysql
