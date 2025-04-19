@@ -91,8 +91,8 @@ venv:
 	echo "✅")
 
 env:
-	@chmod +x ./srcs/requirements/tools/generate-env.sh
-	@./srcs/requirements/tools/generate-env.sh
+	@chmod +x ./srcs/requirements/tools/setup-env.sh
+	@./srcs/requirements/tools/setup-env.sh
 
 .PHONY: all setup up down clean fclean nuke re permission env \
 	$(SERVICES) \
