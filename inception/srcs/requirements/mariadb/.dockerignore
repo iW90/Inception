@@ -4,9 +4,10 @@
 # Permite apenas os arquivos necessários
 !conf/
 !conf/my.cnf
+!conf/init.sql.template
 
 !tools/
-!tools/db-setup.sh
+!tools/entrypoint.sh
 
 # Garante que Dockerfile e .dockerignore não sejam ignorados (se você quiser manter o padrão de build)
 !Dockerfile
