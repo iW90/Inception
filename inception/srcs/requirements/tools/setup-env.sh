@@ -47,7 +47,7 @@ read_secret FTP_PASSWORD              "🔑 FTP_PASSWORD"
 read_secret HEALTH_PASSWORD           "🔑 HEALTH_PASSWORD"
 
 # Valor automático do login
-LOGIN=$(whoami)
+LOGIN=($1)
 
 # Criação do .env
 cat <<EOF > "$ENV_FILE"
@@ -71,7 +71,6 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 FTP_USER=ftpuser
 FTP_PASSWORD=$FTP_PASSWORD
-FTP_PATH=/var/www/wordpress
 EOF
 
 echo "✅ .env file generated successfully at $ENV_FILE!"
