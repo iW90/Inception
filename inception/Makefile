@@ -16,6 +16,7 @@ COMPOSE_ENV			:= LOGIN=$(LOGIN) DATA_DIR=$(DATA_DIR) UID=$$(id -u) GID=$$(id -g)
 DOCKER_COMPOSE_YML	:= ./srcs/docker-compose.yml
 SERVICES			:= nginx wordpress mariadb adminer redis site ftp cadvisor
 
+
 all: permission setup up
 
 setup:
@@ -24,6 +25,8 @@ setup:
 		echo "Creating volume directories as root..."; \
 		sudo mkdir -p $(DATA_DIR)/wp-database; \
 		sudo mkdir -p $(DATA_DIR)/wp-pages; \
+		sudo mkdir -p $(DATA_DIR)/site; \
+		sudo mkdir -p $(DATA_DIR)/ftp; \
 		sudo mkdir -p $(DATA_DIR)/adminer-volume; \
 		sudo chown -R $$(whoami):$$(whoami) /home/$(LOGIN); \
 	fi
@@ -58,7 +61,7 @@ clean:
 		echo "To override, run: make $(MAKECMDGOALS) FORCE=true"; \
 		exit 1; \
 	fi
-	@sudo rm -rf $(DATA_DIR)/wp-pages $(DATA_DIR)/wp-database $(DATA_DIR)/adminer-volume
+	@sudo rm -rf $(DATA_DIR)/wp-pages $(DATA_DIR)/wp-database $(DATA_DIR)/site $(DATA_DIR)/ftp $(DATA_DIR)/adminer-volume
 	@sudo rmdir $(DATA_DIR) || echo "$(DATA_DIR) should be empty but isn't"
 	@$(COMPOSE_ENV) docker-compose -f $(DOCKER_COMPOSE_YML) down -v --rmi all --remove-orphans
 
@@ -85,6 +88,8 @@ permission:
 env:
 	@chmod +x ./srcs/requirements/tools/setup-env.sh
 	@./srcs/requirements/tools/setup-env.sh $(LOGIN)
+
+alias:
 	@echo "NOTE: add the following alias to avoid port mess when using docker ps"
 	@echo 'alias dps='\''docker ps --format "table {{.ID}}\\t{{.Image}}\\t{{.Names}}\\t{{.Status}}"'\'
 
