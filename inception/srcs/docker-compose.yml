@@ -144,7 +144,7 @@ services:
       - ftp-pages:/var/www/ftp
     image: ftp
     build:
-      context: ./bonus/ftp
+      context: ./requirements/bonus/ftp
       args:
         FTP_PATH: /var/www/ftp
         FTP_USER: ${FTP_USER}
