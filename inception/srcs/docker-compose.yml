@@ -18,6 +18,18 @@ volumes:
       type: 'none'          # Não usa um tipo de volume especial, apenas vincula ao sistema de arquivos do host
       o: 'bind'             # Define que o volume será um "bind mount" (monta o diretório do host diretamente no container)
       device: '${DATA_DIR}/wp-database'   # Diretório do host para armazenar os dados do MariaDB
+  ftp-pages:                # Bônus: Volume do FTP
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${DATA_DIR}/ftp'
+  site-pages:               # Bônus: Volume do Site
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${DATA_DIR}/site'
   adminer-volume:           # Bônus: Volume do Adminer
     driver: local
     driver_opts:
@@ -51,6 +63,7 @@ services:
       retries: 5
     depends_on:
       - wordpress           # Garante que o container 'wordpress' seja iniciado antes (mas não garante que esteja pronto!)
+      - site                # Garante que o container 'site' seja iniciado antes (mas não garante que esteja pronto!)
 
   wordpress:
     container_name: wordpress
@@ -104,7 +117,7 @@ services:
       - adminer-volume:/var/www/adminer
     image: adminer
     build:
-      context: ./bonus/adminer
+      context: ./requirements/bonus/adminer
     depends_on:
       - mariadb
 
@@ -115,7 +128,7 @@ services:
       - inception
     image: redis
     build:
-      context: ./bonus/redis
+      context: ./requirements/bonus/redis
     depends_on:
       - wordpress
 
@@ -128,12 +141,12 @@ services:
       - "21:21"
       - "10099-10100:10099-10100"
     volumes:
-      - wp-pages:${FTP_PATH}
+      - ftp-pages:/var/www/ftp
     image: ftp
     build:
       context: ./bonus/ftp
       args:
-        FTP_PATH: ${FTP_PATH}
+        FTP_PATH: /var/www/ftp
         FTP_USER: ${FTP_USER}
         FTP_PASSWORD: ${FTP_PASSWORD}
     depends_on:
@@ -153,13 +166,16 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     image: cadvisor
     build:
-      context: ./bonus/cadvisor
+      context: ./requirements/bonus/cadvisor
 
   site:
     container_name: site
     restart: always
     networks:
       - inception
+    volumes:
+      - site-pages:/var/www/site
+      - ftp-pages:/var/www/site/ftp:ro
     image: site
     build:
-      context: ./bonus/site
+      context: ./requirements/bonus/site

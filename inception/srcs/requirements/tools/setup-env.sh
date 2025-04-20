@@ -2,8 +2,6 @@
 
 ENV_FILE="srcs/.env"
 
-
-
 # Remove o .env existente, se houver
 if [ -f "$ENV_FILE" ]; then
   echo "[ENV] Removing existing $ENV_FILE..."
@@ -57,7 +55,7 @@ WP_DATABASE_USER=wp_user
 WP_DATABASE_ROOT=root
 WP_DATABASE_PASSWORD=$WP_DATABASE_PASSWORD
 WP_DATABASE_ROOT_PASSWORD=$WP_DATABASE_ROOT_PASSWORD
-WP_URL="http://$LOGIN.42.fr"
+WP_URL="https://$LOGIN.42.fr"
 WP_TITLE="The $LOGIN's page of wonderful ${LOGIN}derness"
 WP_ADMIN_USER=toptier
 WP_ADMIN_EMAIL="toptier@example.com"
