@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV_FILE="srcs/.env"´
+ENV_FILE="srcs/.env"
 
 
 
