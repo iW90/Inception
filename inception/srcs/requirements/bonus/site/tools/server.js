@@ -13,6 +13,12 @@ http.createServer((req, res) => {
     const relativeFtpPath = reqUrl.replace('/ftp', '');
     const fullFtpPath = path.join(ftpPath, relativeFtpPath);
 
+      // Segurança: prevenir path traversal
+    if (!fullFtpPath.startsWith(ftpPath)) {
+      res.writeHead(403);
+      return res.end('403 Forbidden');
+    }
+
     fs.stat(fullFtpPath, (err, stats) => {
       if (err) {
         res.writeHead(404);
