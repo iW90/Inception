@@ -1,5 +1,3 @@
-version: "3"
-
 networks:                   # Cria uma rede Docker personalizada chamada inception, baseada no padrão bridge.
   inception:
     driver: bridge

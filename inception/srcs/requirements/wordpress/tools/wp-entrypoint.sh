@@ -4,16 +4,16 @@
 set -e
 
 # Espera o banco de dados estar disponível antes de seguir, tentando se conectar continuamente
-echo "Waiting for MariaDB at $WP_DATABASE_HOST..."
+echo "[WP] Waiting for MariaDB at $WP_DATABASE_HOST..."
 until mysqladmin ping -h"$WP_DATABASE_HOST" --silent; do
-  echo "Waiting..."
+  echo "[WP] Waiting..."
   sleep 1
 done
-echo "MariaDB is up."
+echo "[WP] MariaDB is up."
 
 # Verifica se o WordPress já está instalado (para evitar re-instalar a cada start)
 if ! wp core is-installed --allow-root --path=/var/www/wordpress; then
-  echo "Installing WordPress..."
+  echo "[WP] Installing WordPress..."
 
   # Cria o arquivo wp-config.php com as configurações do banco
   wp config create --allow-root \
@@ -54,5 +54,5 @@ if ! wp core is-installed --allow-root --path=/var/www/wordpress; then
 fi
 
 # Inicia o PHP-FPM em modo foreground (-F), mantendo o container rodando
-echo "WordPress is ready"
+echo "[WP] WordPress is ready"
 exec php-fpm83 -F

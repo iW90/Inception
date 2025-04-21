@@ -9,6 +9,6 @@
 !tools/
 !tools/entrypoint.sh
 
-# Garante que Dockerfile e .dockerignore não sejam ignorados (se você quiser manter o padrão de build)
+# Garante que Dockerfile e .dockerignore não sejam ignorados
 !Dockerfile
 !.dockerignore
