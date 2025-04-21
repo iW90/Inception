@@ -21,9 +21,14 @@ No entanto, hoje temos alternativas mais seguras, como:
 No terminal:
 
 - `ftp inwagner.42.fr`
+- Nome do usuário (ftpuser)
+- senha
 - `passive`
-- `put <relative_path_to_file>`
+- `put <relative_path_to_file> <file_name>`
 
 Depois você pode visualizar o arquivo em:
 
 - Link: https://inwagner.42.fr/site/ftp/
+
+E para baixar:
+- `get <file_name>`
