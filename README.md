@@ -1,6 +1,6 @@
 # 42 Cursus - Inception
 
-<img src="./assets/inceptione.png" alt="completion-with-bonus-badge" align="left">
+<img src="./assets/images/inceptione.png" alt="completion-with-bonus-badge" align="left">
 
 Este projeto consiste no aprendizado sobre Docker e na criação de ambientes de produção com containers. Dentre os componentes envolvidos, temos o NGINX, WordPress, MariaDB, volumes e rede personalizada. Os Dockerfiles devem configurar variáveis de ambiente, criar as imagens de cada serviço e garantir a reinicialização automática em caso de falhas, sem uso de loops infinitos. A orquestração será realizada por meio de um arquivo docker-compose.yml, e a automação da construção será feita por um Makefile.
 
@@ -8,7 +8,7 @@ Este projeto consiste no aprendizado sobre Docker e na criação de ambientes de
 
 A aplicação está organizada em uma arquitetura modular e isolada por responsabilidades. Todos os containers estão conectados à mesma docker network, permitindo comunicação interna entre eles sem expor portas desnecessárias para fora da rede.
 
-![architecture diagram](./assets/inception_architecture.svg)
+![architecture diagram](./assets/images/inception_architecture.svg)
 
 - **WWW (usuário final)**: As requisições do usuário chegam pela web via protocolo HTTPS (SSL/TLS) na porta 443, que é exposta pelo container NGINX. Essa camada garante a comunicação criptografada entre o cliente e o servidor, protegendo dados sensíveis e aumentando a segurança da aplicação.
 
