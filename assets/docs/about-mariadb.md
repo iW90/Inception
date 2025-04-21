@@ -10,9 +10,12 @@ No contexto de containers Docker, o MariaDB geralmente é usado em conjunto com 
 
 - O container deve estar em execução
 - Você pode acessar o terminal do MariaDB rodando dentro do container com o comando:
-	- `docker exec -it nome_do_container_mariadb mysql -u root -p`
+	- `docker exec -it mariadb mariadb -u root -p`
+		- (ou separadamente: `docker exec -it mariadb bash` e `mariadb -u root -p`)
 	- O `-u` root significa que você está tentando fazer login com o usuário root (admin do banco de dados).
 	- Se você não configurou uma senha, pode ser que a senha seja em branco ou definida por variáveis de ambiente no seu arquivo de configuração.
 - Depois de fazer login, você verá o prompt do MariaDB: `MariaDB [(none)]>`
 	- Agora você pode rodar comandos SQL, como listar os bancos de dados:
 	- `SHOW DATABASES;`
+	- `USE wordpress;`
+	- `SHOW TABLES;`

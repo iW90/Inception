@@ -10,3 +10,7 @@ Disponibiliza uma interface web bem simples e visual com gráficos detalhados, o
 - Histórico de desempenho
 
 Tudo por container, e com atualização em tempo real.
+
+## Como acessar
+
+- Link: https://inwagner.42.fr/cadvisor/

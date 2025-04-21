@@ -15,3 +15,15 @@ No entanto, hoje temos alternativas mais seguras, como:
 | SFTP | 🔒 Usa SSH (porta 22) | Ambientes modernos e seguros |
 | FTPS | 🔐 FTP com TLS | Sites que exigem compatibilidade com clientes FTP legados |
 | WebDAV | 🌐 HTTPS + sistema de arquivos remoto | Integrações com sistemas como Nextcloud, OwnCloud, etc |
+
+## Como acessar
+
+No terminal:
+
+- `ftp inwagner.42.fr`
+- `passive`
+- `put <relative_path_to_file>`
+
+Depois você pode visualizar o arquivo em:
+
+- Link: https://inwagner.42.fr/site/ftp/

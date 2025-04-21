@@ -11,5 +11,14 @@
 - Exportar/importar dados
 - Gerenciar usuários e permissões
 
-## Como usar
+## Como acessar
 
+- Link: https://inwagner.42.fr/adminer/
+
+|        |        |
+| :----- | :----- |
+| System | MySQL / MariaDB |
+| Server | mariadb |
+| Username | wp_user |
+| Password | *** |
+| Database | wordpress |
