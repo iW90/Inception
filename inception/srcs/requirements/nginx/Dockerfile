@@ -21,7 +21,7 @@ RUN adduser -u ${UID} -G www-data -D -s /sbin/nologin nginxuser && \
     mkdir -p /run/nginx && \
     chown -R nginxuser:www-data /run/nginx
 
-COPY ./conf/nginx-template.conf /etc/nginx/nginx-template.conf
+COPY ./conf/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY ./tools/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
