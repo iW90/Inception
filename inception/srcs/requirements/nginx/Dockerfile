@@ -22,11 +22,11 @@ RUN adduser -u ${UID} -G www-data -D -s /sbin/nologin nginxuser && \
     chown -R nginxuser:www-data /run/nginx
 
 COPY ./conf/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY ./tools/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY ./tools/ng-entrypoint.sh /ng-entrypoint.sh
+RUN chmod +x /ng-entrypoint.sh
 
 EXPOSE 443
 
 USER nginxuser
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/ng-entrypoint.sh"]
