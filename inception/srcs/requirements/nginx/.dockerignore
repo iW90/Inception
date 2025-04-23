@@ -3,7 +3,7 @@
 
 # Permite apenas os arquivos necessários para o build
 !conf/
-!conf/nginx-template.conf
+!conf/nginx.conf.template
 
 !tools/
 !tools/entrypoint.sh
