@@ -21,9 +21,11 @@ RUN adduser -u ${UID} -G www-data -D -s /sbin/nologin nginxuser && \
     mkdir -p /run/nginx && \
     chown -R nginxuser:www-data /run/nginx
 
-COPY ./conf/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY ./tools/ng-entrypoint.sh /ng-entrypoint.sh
-RUN chmod +x /ng-entrypoint.sh
+COPY ./conf/nginx-template.conf /etc/nginx/nginx.conf.template
+RUN chown nginxuser:www-data /etc/nginx/nginx.conf.template
+
+COPY ./tools/entrypoint.sh /entrypoint.sh
+RUN chmod 755 /entrypoint.sh && chown nginxuser:www-data /entrypoint.sh
 
 EXPOSE 443
 
