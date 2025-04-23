@@ -11,7 +11,7 @@ Com ele, você pode:
 No entanto, hoje temos alternativas mais seguras, como:
 
 | Protocolo | Segurança | Recomendado para |
-| :-------- | :-------- | : -------------- |
+| :-------- | :-------- | :-------------- |
 | SFTP | 🔒 Usa SSH (porta 22) | Ambientes modernos e seguros |
 | FTPS | 🔐 FTP com TLS | Sites que exigem compatibilidade com clientes FTP legados |
 | WebDAV | 🌐 HTTPS + sistema de arquivos remoto | Integrações com sistemas como Nextcloud, OwnCloud, etc |
