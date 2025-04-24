@@ -62,69 +62,6 @@
 
     - O container NGINX deve ser o único Entrypoint para a sua infraestrutura e deve escutar na porta 443 com TLSv1.2 ou TLSv1.3 configurados.
 
-
-## Estrutura de Diretórios
-
-1. Root
-    ```
-    $> ls -alR
-    total XX
-    drwxrwxr-x 3 wil wil 4096 avril 42 20:42 .
-    drwxrwxrwt 17 wil wil 4096 avril 42 20:42 ..
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 Makefile
-    drwxrwxr-x 3 wil wil 4096 avril 42 20:42 srcs
-    ``` 
-
-2. Srcs
-    ```
-    ./srcs:
-    total XX
-    drwxrwxr-x 3 wil wil 4096 avril 42 20:42 .
-    drwxrwxr-x 3 wil wil 4096 avril 42 20:42 ..
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 docker-compose.yml
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 .env
-    drwxrwxr-x 5 wil wil 4096 avril 42 20:42 requirements
-    ```
-
-3. Requirements
-    ```
-    ./srcs/requirements:
-    total XX
-    drwxrwxr-x 5 wil wil 4096 avril 42 20:42 .
-    drwxrwxr-x 3 wil wil 4096 avril 42 20:42 ..
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:42 bonus
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:42 mariadb
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:42 nginx
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:42 tools
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:42 wordpress
-    ```
-
-4. MariaDB
-    ```
-    ./srcs/requirements/mariadb:
-    total XX
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:45 .
-    drwxrwxr-x 5 wil wil 4096 avril 42 20:42 ..
-    drwxrwxr-x 2 wil wil 4096 avril 42 20:42 conf
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 Dockerfile
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 .dockerignore
-    drwxrwxr-x 2 wil wil 4096 avril 42 20:42 tools
-    [...]
-    ```
-
-5. NGINX
-    ```
-    ./srcs/requirements/nginx:
-    total XX
-    drwxrwxr-x 4 wil wil 4096 avril 42 20:42 .
-    drwxrwxr-x 5 wil wil 4096 avril 42 20:42 ..
-    drwxrwxr-x 2 wil wil 4096 avril 42 20:42 conf
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 Dockerfile
-    -rw-rw-r-- 1 wil wil XXXX avril 42 20:42 .dockerignore
-    drwxrwxr-x 2 wil wil 4096 avril 42 20:42 tools
-    [...]
-    ```
-
 ### .env
 
 Exemplo de Arquivo .env:
@@ -241,3 +178,9 @@ Requisitos para a Parte Bônus:
 
 - Volume Dedicado:
     - Para alguns serviços, como o Redis e o FTP, pode ser necessário configurar volumes dedicados, para persistir dados importantes como cache ou arquivos transferidos.
+ 
+
+### Dicas para VM:
+
+- `sudo cp -r /mnt/shared ~/Documents`
+- `sudo chown -R <root>:<pass> ~/Documents/shared`
